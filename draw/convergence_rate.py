@@ -103,13 +103,31 @@ def plot_once(path, num, ex_name, is_x_log=True, is_y_log=True, y_num=3, x_num=0
     plt.fill_between(tmp_x, y_matrix[_10_num, :], y_matrix[-_10_num - 1, :], color=plot_color[num][2], alpha=0.5)
 
 
-def plot_hist(path, ex_name, y_num=2):
-    csv_file_list = get_file_name_list(path)
-    tmp_data = get_result(csv_file_list[0])
+def plt_perfect_game_convergence_inline(game_name, logdir, is_x_log=True, is_y_log=True, y_num=3, x_num=0,
+                                        log_interval_mode='node_touched'):
+    file_list = os.listdir(logdir)
+    file_list.sort()
 
-    tmp_x = [tmp_data[y_num]]
+    plt.ylabel('log10(Exploitability)')
+    if log_interval_mode == 'node_touched':
+        is_x_log = False
+        is_y_log = True
+        # plt.xlabel('log10(Node touched)')
+        plt.xlabel('Node touched')
+    elif log_interval_mode == 'train_time':
+        is_x_log = False
+        is_y_log = True
+        plt.xlabel('Train Time')
 
-    for i in range(1, len(csv_file_list)):
-        tmp_data = get_result(csv_file_list[i])
-        tmp_x.append(tmp_data[y_num])
-    sns.histplot(tmp_x, bins=20, color=plot_color[0][0], kde=True)
+    for i_file in range(len(file_list)):
+        plot_once(
+            logdir + '/' + file_list[i_file],
+            i_file,
+            file_list[i_file],
+            is_x_log=is_x_log,
+            is_y_log=is_y_log,
+            y_num=y_num,
+            x_num=x_num
+        )
+
+    plt.title(game_name)

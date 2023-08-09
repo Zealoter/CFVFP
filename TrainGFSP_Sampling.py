@@ -19,12 +19,9 @@ from GFSP_Sampling.PCFR import PCFRSolver
 from GFSP_Sampling.GFSP import GFSPSamplingSolver
 from GFSP_Sampling.WarmStartCFR import WSCFRSolver
 
-from CONFIG import juqi_test_sampling_train_config
-from CONFIG import ft_sampling_train_config
-import draw.draw1
+from CONFIG import test_sampling_train_config
 
-import draw.convergence_rate
-from draw.convergence_rate import plot_once
+from draw.convergence_rate import plt_perfect_game_convergence_inline
 import matplotlib.pyplot as plt
 from joblib import Parallel, delayed
 import gc
@@ -98,12 +95,12 @@ if __name__ == '__main__':
     total_exp_name = str(prior_state_num) + '_' + game_name + '_' + time.strftime('%Y_%m_%d_%H_%M_%S',
                                                                                   time.localtime(time.time()))
 
-    for key in juqi_test_sampling_train_config.keys():
+    for key in test_sampling_train_config.keys():
         start = time.time()
         print(key)
         parallel_train_config_list = []
         for i_train_repetition in range(nun_of_train_repetitions):
-            train_config = copy.deepcopy(juqi_test_sampling_train_config[key])
+            train_config = copy.deepcopy(test_sampling_train_config[key])
 
             train_config['game'] = copy.deepcopy(game_class)
             train_config['game_info'] = key
@@ -144,7 +141,7 @@ if __name__ == '__main__':
         plot_x_index = 0
 
     plt.subplot(1, 2, 1)
-    draw.draw1.plt_perfect_game_convergence_inline(
+    plt_perfect_game_convergence_inline(
         fig_title,
         logdir + '/' + total_exp_name,
         is_x_log=True,
@@ -153,7 +150,7 @@ if __name__ == '__main__':
         log_interval_mode='node_touched'
     )
     plt.subplot(1, 2, 2)
-    draw.draw1.plt_perfect_game_convergence_inline(
+    plt_perfect_game_convergence_inline(
         fig_title,
         logdir + '/' + total_exp_name,
         is_x_log=False,
@@ -166,4 +163,4 @@ if __name__ == '__main__':
     # plt.axis()
     plt.legend(edgecolor='red')
     plt.savefig(logdir + '/' + total_exp_name + '/pic.png')
-    # plt.show()
+    plt.show()

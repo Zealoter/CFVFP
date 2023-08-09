@@ -1,8 +1,3 @@
-"""
-# @Author: JuQi
-# @Time  : 2023/3/9 17:57
-# @E-mail: 18672750887@163.com
-"""
 
 import numpy as np
 import os
@@ -77,7 +72,7 @@ class GFSPSamplingSolver(object):
     def log_model(self, itr: int, train_time: float = 0.0):
         """
         Record data during training
-        :param train_time: Time spent on training
+        :param train_time: Time spent on training;
         :param itr: Training times
         :return:
         """

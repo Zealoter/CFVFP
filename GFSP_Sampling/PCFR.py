@@ -1,9 +1,3 @@
-"""
-# @Author: JuQi
-# @Time  : 2022/9/29 16:43
-# @E-mail: 18672750887@163.com
-"""
-import copy
 
 import numpy as np
 from GFSP_Sampling.GFSP import GFSPSamplingSolver
