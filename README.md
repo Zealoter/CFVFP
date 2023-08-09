@@ -1,13 +1,13 @@
 # Pure Monte Carlo Counterfactual Regret Minimization
 
 This is the code accompanying the paper: Pure Monte Carlo Counterfactual Regret Minimization.
-By Qi Ju,xxx
+By Ju Qi, xxx
 
 ## OverView
 
 Abstract
 
-## Instrucitions
+## Instructions
 
 ### Requirements
 ```
@@ -23,12 +23,12 @@ cycler
 ### How to run the framework
 
 TrainGFSP_Sampling.py
-```bazaar
-    game_name = 'Leduc5Pot'
-    is_show_policy = False
-    prior_state_num = 3
-    y_pot = 3
-    z_len = 3
+```python
+game_name = 'Leduc'
+is_show_policy = False
+prior_state_num = 3
+y_pot = 3
+z_len = 3
 ```
 The above code is used to set the experimental configuration, where 'game_name' determines the type of 
 game to be trained. This can be referenced from the code below or from the 'Game_Sampling'. 
@@ -41,10 +41,10 @@ The 'prior_state_num' is used to set the scale of the game, and there are severa
 The 'y_pot''z_len' is only for when the 'game_name' is 'KuhnNPot'.
 
 
-```bazaar
-    train_mode = 'fix_itr'
-    log_interval_mode = 'itr'
-    log_mode = 'exponential'
+```python
+train_mode = 'fix_itr'
+log_interval_mode = 'itr'
+log_mode = 'exponential'
 ```
 The 'train_mode' is set to the mode used for training:
     For "train_mode = 'fix_itr'"it means fix number of training rounds.
@@ -57,11 +57,11 @@ The 'log_mode' is set to the interval for recording results:
     For'exponential' records in exponential form.
     Fpr 'normal' records in arithmetic form.
 
-```bazaar
-    total_train_constraint = 10
-    log_interval = 5
-    nun_of_train_repetitions = 5
-    n_jobs = 1  
+```python
+total_train_constraint = 10
+log_interval = 5
+nun_of_train_repetitions = 5
+n_jobs = 1  
 ```
 
 The setting of 'total_train_constraint'  depends on the selected 'train_mode':
