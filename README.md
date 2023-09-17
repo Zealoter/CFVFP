@@ -1,7 +1,7 @@
 # Pure Monte Carlo Counterfactual Regret Minimization
 
 This is the code accompanying the paper: Pure Monte Carlo Counterfactual Regret Minimization.
-By Ju Qi, xxx
+By Ju Qi.
 
 ## OverView
 
