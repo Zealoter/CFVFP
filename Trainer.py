@@ -1,26 +1,18 @@
-"""
-# @Author: JuQi
-# @Time  : 2023/3/6 19:08
-# @E-mail: 18672750887@163.com
-"""
 import copy
 import time
 import numpy as np
-from GAME_Sampling.GameKuhn import Kuhn
-from GAME_Sampling.GameLeduc import Leduc
-from GAME_Sampling.GameLeduc5Pot import Leduc5Pot
-from GAME_Sampling.GameLeduc3Pot import Leduc3Pot
-from GAME_Sampling.GameGoofspiel import Goofspiel
-from GAME_Sampling.GameKuhnNPot import KuhnNPot
-from GAME_Sampling.GamePrincessAndMonster import PrincessAndMonster as PAM
-from GAME_Sampling.GameThreeCardPoker import ThreeCardPoker
-from GAME_Sampling.GameMatrix import Matrix
-from GFSP_Sampling.PCFR import PCFRSolver
-from GFSP_Sampling.GFSP import GFSPSamplingSolver
-from GFSP_Sampling.WarmStartCFR import WSCFRSolver
-
+from GAME.GameKuhn import Kuhn
+from GAME.GameLeduc import Leduc
+from GAME.GameLeduc5Pot import Leduc5Pot
+from GAME.GameLeduc3Pot import Leduc3Pot
+from GAME.GameGoofspiel import Goofspiel
+from GAME.GameKuhnNPot import KuhnNPot
+from GAME.GamePrincessAndMonster import PrincessAndMonster as PAM
+from Solver.CFVFP import CFVFPSolver
+from Solver.CFR import CFRSolver
 from CONFIG import test_sampling_train_config
 
+import draw.convergence_rate
 from draw.convergence_rate import plt_perfect_game_convergence_inline
 import matplotlib.pyplot as plt
 from joblib import Parallel, delayed
@@ -28,13 +20,11 @@ import gc
 
 
 def train_sec(tmp_train_config):
-    op_env = tmp_train_config.get('op_env', 'GFSP')
-    if op_env == 'PCFR':
-        tmp = PCFRSolver(tmp_train_config)
-    elif op_env == 'GFSP':
-        tmp = GFSPSamplingSolver(tmp_train_config)
-    elif op_env == 'WS':
-        tmp = WSCFRSolver(tmp_train_config)
+    op_env = tmp_train_config.get('op_env', 'CFR')
+    if op_env == 'CFVFP':
+        tmp = CFVFPSolver(tmp_train_config)
+    elif op_env == 'CFR':
+        tmp = CFRSolver(tmp_train_config)
     else:
         return
     tmp.train()
@@ -44,19 +34,21 @@ def train_sec(tmp_train_config):
 
 
 if __name__ == '__main__':
-    np.set_printoptions(formatter={'float': '{: 0.6f}'.format}, suppress=True)
-    logdir = 'logGFSPSampling'
-    game_name = 'Kuhn'
+    np.set_printoptions(precision=6, suppress=True)
+
+    logdir = 'logCFRSampling'
+    game_name = 'Leduc'
     is_show_policy = False
-    prior_state_num = 3
-    y_pot = 3
-    z_len = 3
+    prior_state_num = 15
+    y_pot = 1
+    z_len = 1
 
     game_config = {
         'game_name'      : game_name,
         'prior_state_num': prior_state_num,
         'y_pot'          : y_pot,
         'z_len'          : z_len,
+        'player_num'     : 2
     }
 
     if game_name == 'Leduc':
@@ -73,24 +65,23 @@ if __name__ == '__main__':
         game_class = KuhnNPot(game_config)
     elif game_name == 'PAM':
         game_class = PAM(game_config)
-    elif game_name == 'ThreeCardPoker':
-        game_class = ThreeCardPoker(game_config)
-    elif game_name == 'Matrix':
-        game_class = Matrix(game_config)
+
 
     # train_mode = 'fix_itr'
     train_mode = 'fix_node_touched'
     # train_mode = 'fix_train_time'
+
     # log_interval_mode = 'itr'
     log_interval_mode = 'node_touched'
     # log_interval_mode = 'train_time'
+
     # log_mode = 'normal'
     log_mode = 'exponential'
 
-    total_train_constraint = 100000
-    log_interval = 2
-    nun_of_train_repetitions = 1
-    n_jobs = 1  # Parallel run settings
+    total_train_constraint = 10000000
+    log_interval = 1.5
+    nun_of_train_repetitions = 9
+    n_jobs = 9
 
     total_exp_name = str(prior_state_num) + '_' + game_name + '_' + time.strftime('%Y_%m_%d_%H_%M_%S',
                                                                                   time.localtime(time.time()))
@@ -114,6 +105,7 @@ if __name__ == '__main__':
             train_config['log_interval'] = log_interval
 
             train_config['No.'] = i_train_repetition
+
             parallel_train_config_list.append(train_config)
 
         ans_list = Parallel(n_jobs=n_jobs)(
@@ -130,37 +122,28 @@ if __name__ == '__main__':
     else:
         fig_title = str(prior_state_num) + '_' + game_name
 
-    if log_interval_mode == 'itr':
-        plot_x_index = 0
-    elif log_interval_mode == 'node_touched':
-        plot_x_index = 4
-    elif log_interval_mode == 'train_time':
-        plot_x_index = 1
-    else:
-        print('plot_x_index is incorrect')
-        plot_x_index = 0
-
     plt.subplot(1, 2, 1)
     plt_perfect_game_convergence_inline(
         fig_title,
         logdir + '/' + total_exp_name,
         is_x_log=True,
-        x_num=4,
-        y_num=2,
-        log_interval_mode='node_touched'
+        is_y_log=False,
+        x_label_index=4,
+        y_label_index=2,
+        x_label_name='node touched',
+        y_label_name='epsilon'
     )
     plt.subplot(1, 2, 2)
     plt_perfect_game_convergence_inline(
         fig_title,
         logdir + '/' + total_exp_name,
-        is_x_log=False,
-        x_num=1,
-        y_num=2,
-        log_interval_mode='train_time'
+        is_x_log=True,
+        is_y_log=False,
+        x_label_index=1,
+        y_label_index=2,
+        x_label_name='time(ms)',
+        y_label_name='epsilon'
     )
 
-    plt.tight_layout()
-    # plt.axis()
-    plt.legend(edgecolor='red')
     plt.savefig(logdir + '/' + total_exp_name + '/pic.png')
-    plt.show()
+    # plt.show()

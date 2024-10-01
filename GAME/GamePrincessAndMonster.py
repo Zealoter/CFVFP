@@ -1,9 +1,4 @@
-"""
-# @Author: JuQi
-# @Time  : 2023/3/6 15:39
-# @E-mail: 18672750887@163.com
-"""
-from GAME_Sampling.Game import Game
+from GAME.Game import Game
 import numpy as np
 
 

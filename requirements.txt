@@ -1,4 +1,3 @@
 numpy
 joblib
 matplotlib
-seaborn

@@ -1,9 +1,4 @@
-"""
-# @Author: JuQi
-# @Time  : 2023/3/6 15:39
-# @E-mail: 18672750887@163.com
-"""
-from GAME_Sampling.GameKuhn import Kuhn
+from GAME.GameKuhn import Kuhn
 import numpy as np
 
 
@@ -35,6 +30,7 @@ class KuhnNPot(Kuhn):
                 if his_feat[-3] == 'C':
                     money = 1
                 else:
+                    # money = (self.pot_symbol.index(his_feat[-3]) + 1.0) / self.y_pot * 100
                     money = 2 ** self.pot_symbol.index(his_feat[-3])
 
             if self.get_now_player_from_his_feat(his_feat) == 'player1':
@@ -45,6 +41,7 @@ class KuhnNPot(Kuhn):
             if his_feat[-2] == 'C':
                 money = 1
             else:
+                # money = (self.pot_symbol.index(his_feat[-2]) + 1.0) / self.y_pot * 100
                 money = 2 ** self.pot_symbol.index(his_feat[-2])
 
             his_feat_list = his_feat.split('_')

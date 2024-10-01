@@ -1,9 +1,4 @@
-"""
-# @Author: JuQi
-# @Time  : 2023/3/6 15:39
-# @E-mail: 18672750887@163.com
-"""
-from GAME_Sampling.Game import Game
+from GAME.Game import Game
 import numpy as np
 
 
@@ -49,7 +44,7 @@ class Leduc(Game):
         if his_feat.count('_') == 3 and his_feat[-1] == '_':
             return ['F', 'C', 'R']
         elif his_feat[-1] == '_':
-            return ['R', 'C']
+            return ['C', 'R']
         elif his_feat[-2:] == 'RR':
             return ['F', 'C']
         elif his_feat[-1] == 'R':
