@@ -66,27 +66,26 @@ def get_file_name_list(path: str) -> list:
 
 
 def get_result(file_path: str) -> np.ndarray:
-    data = np.loadtxt(file_path, delimiter=',', skiprows=2)  # 提取file_path这个文件里面的内容，转换为一个数组形式  ，表示里面的分隔符
+    data = np.loadtxt(file_path, delimiter=',', skiprows=2)
 
     return data
 
 
 def plot_once(path, num, ex_name, is_x_log=True, is_y_log=True, y_label_index=3, x_label_index=0):
-    # 如果是时间x_label_index=1,如果是itr x_label_index=0
-    csv_file_list = get_file_name_list(path)  # 获取子文件中所有的epsilon文件
+    csv_file_list = get_file_name_list(path)
     _10_num = int(0.1 * len(csv_file_list))
     one_trail_data = get_result(csv_file_list[0])
 
     if is_x_log:
-        x_data = np.log10(one_trail_data[:, x_label_index])  # 训练次数    从total_data中取第一列的所有元素，并进行以10为底的log运算
+        x_data = np.log10(one_trail_data[:, x_label_index])
     else:
-        x_data = one_trail_data[:, x_label_index]  # 否则直接讲第一列元素赋给tmp_x
+        x_data = one_trail_data[:, x_label_index]
 
     tmp_min_x = one_trail_data.shape[0]
 
-    mean_y_data = one_trail_data[:, y_label_index]  # 将第三列的值赋值给tmpy  即epsilon
-    y_data_matrix = np.zeros((len(csv_file_list), tmp_min_x))  # 创建二维数组
-    y_data_matrix[0, :] = mean_y_data  # 将tm_y全部元素赋值给二维数组的第一行
+    mean_y_data = one_trail_data[:, y_label_index]
+    y_data_matrix = np.zeros((len(csv_file_list), tmp_min_x))
+    y_data_matrix[0, :] = mean_y_data
 
     for i in range(1, len(csv_file_list)):
         one_trail_data = get_result(csv_file_list[i])
@@ -98,7 +97,7 @@ def plot_once(path, num, ex_name, is_x_log=True, is_y_log=True, y_label_index=3,
             x_data = x_data[-tmp_min_x:]
         one_trail_data = one_trail_data[-tmp_min_x:, :]
 
-        mean_y_data += one_trail_data[:, y_label_index]  # 对第y-num列的所有数据求和 分别对应相加
+        mean_y_data += one_trail_data[:, y_label_index]
         y_data_matrix[i, :] = one_trail_data[:, y_label_index]
         if is_y_log:
             plt.scatter(x_data, np.log10(one_trail_data[:, y_label_index]), s=1, marker=plot_marker[num],
@@ -106,9 +105,9 @@ def plot_once(path, num, ex_name, is_x_log=True, is_y_log=True, y_label_index=3,
         else:
             plt.scatter(x_data, one_trail_data[:, y_label_index], s=1, marker=plot_marker[num],
                         color=plot_color[num][1], alpha=0.4)
-    y_data_matrix.sort(axis=0)  # 对y_matrix的第一列从小到大排序
+    y_data_matrix.sort(axis=0)
 
-    mean_y_data = mean_y_data / len(csv_file_list)  # 求平均
+    mean_y_data = mean_y_data / len(csv_file_list)
     if is_y_log:
         mean_y_data = np.log10(mean_y_data)
         y_data_matrix = np.log10(y_data_matrix)

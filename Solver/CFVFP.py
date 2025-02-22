@@ -103,7 +103,7 @@ class CFVFPSolver(CFRSolver):
         return r
 
     def all_state_regret_matching_strategy(self):
-        # 在全遍历模式下的遗憾匹配
+        # CFVFP in traversal mode
         for info in self.game.now_prob.keys():
             self.game.w_his_policy[info][self.game.now_policy[info]] += self.ave_weight
             self.game.now_policy[info] = np.argmax(
@@ -111,7 +111,7 @@ class CFVFPSolver(CFRSolver):
             )
             tmp_now_prob = self.game.now_prob[info] * self.ave_weight
             self.game.w_his_policy[info][self.game.now_policy[info]] += tmp_now_prob
-            # 到达这个信息集的概率
+
             self.game.now_prob[info] = 0
             if self.is_rm_plus:
                 self.game.his_regret[info][self.game.his_regret[info] < 0] = 0.0

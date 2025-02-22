@@ -9,11 +9,6 @@ class Goofspiel(Game):
         self.pri_feat['player2'] = 'p2_'
 
     def get_now_player_from_his_feat(self, his_feat: str) -> str:
-        # '_' 1
-        # '_1' 2
-        # '_11_' 4
-        # '_11_2' 5
-        # '_11_22_33_44_55'
         if len(his_feat) % 3 == 1:
             return 'player1'
         else:

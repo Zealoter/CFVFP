@@ -13,7 +13,6 @@ class BaseSolver(object):
         self.game_info = config.get('game_info', '')
         self.is_show_policy = config.get('is_show_policy', False)
         now_path_str = os.getcwd()
-        # 北京时间 东 8 区 +8
         now_time_str = time.strftime('%Y_%m_%d_%H_%M_%S', time.localtime(time.time()))
         self.result_file_path = ''.join(
             [
@@ -56,7 +55,7 @@ class BaseSolver(object):
         np.save(self.result_file_path + '/' + str(episode) + '.npy', tmp_policy)
 
     def log_model(self, itr: int, train_time: float = 0.0):
-        sum_his_regret_per_player = self.game.get_sum_his_regret()  # 全部信息集上的即时遗憾值
+        sum_his_regret_per_player = self.game.get_sum_his_regret()
         weighted_mean_his_regret = sum_his_regret_per_player / self.total_weight
 
         epsilon = 0
@@ -83,7 +82,9 @@ class BaseSolver(object):
         return
 
     def get_epsilon(self, appr_ne_policy: dict):
-        # p1 BR value
+        """
+        Calculate the epsilon value of the approximate NE policy.
+        """
         self.sampling_mode = 'no_sampling'
         self.game.now_policy = copy.deepcopy(appr_ne_policy)
         for i_key in self.game.his_regret.keys():
@@ -176,14 +177,13 @@ class BaseSolver(object):
     def regret_matching_strategy(self, info):
         tmp_r = copy.deepcopy(self.game.his_regret[info])
         tmp_r[tmp_r < 0] = 0.0
-        if np.sum(tmp_r) < 1.0e-20:  # 原理上应该是sum(tmp_r)=0不把右边改成1.0e-20这样，
+        if np.sum(tmp_r) < 1.0e-20:  # In principle, it should be that sum(tmp_r) == 0.
             tmp_act = np.random.rand(len(self.game.now_policy[info]))
             self.game.now_policy[info] = tmp_act / np.sum(tmp_act)
         else:
             self.game.now_policy[info] = tmp_r / np.sum(tmp_r)
 
     def all_state_regret_matching_strategy(self):
-        # 在全遍历模式下的遗憾匹配
         for info in self.game.now_prob.keys():
             tmp_now_prob = self.game.now_prob[info] * self.game.now_policy[info]
             tmp_now_prob = tmp_now_prob * self.ave_weight
@@ -194,7 +194,6 @@ class BaseSolver(object):
 
             self.regret_matching_strategy(info)
 
-            # 到达这个信息集的概率
             self.game.now_prob[info] = 0
 
     def prepare_before_itr(self):
@@ -202,10 +201,8 @@ class BaseSolver(object):
         self.itr_num += 1
 
         if self.sampling_mode == 'no_sampling':
-            # 如果训练是不采样的，则是整局游戏进行玩再训练
             self.all_state_regret_matching_strategy()
         else:
-            # 如果是采样的训练，则是训练开始时重置游戏
             self.game.reset()
 
         self.ave_weight = self.get_ave_weight()
@@ -221,8 +218,7 @@ class BaseSolver(object):
                 print('node_touched:', baseline)
 
         now_time = time.time() - self.start_time
-
-        # Records are defaulted to start after touching 1000 nodes. Otherwise, the error is too large.
+        # Records are defaulted to start after touching 1000 nodes. Otherwise, the epsilon is too large.
         if self.node_touched > self.log_state_start_num:
             if self.log_interval_mode == 'itr':
                 flag_num = self.itr_num
@@ -250,7 +246,7 @@ class BaseSolver(object):
         return False
 
     def log_epsilon(self):
-        print('开始计算epsilon')
+        print('start cal epsilon')
         epsilon_start_time = time.time()
         file_list = os.listdir(self.result_file_path)
         file_list.remove('tmp.csv')
@@ -286,7 +282,7 @@ class BaseSolver(object):
             self.prepare_before_itr()
             tmp_reward = self.walk_tree('_', np.ones(self.game.player_num), 1.0)
             self.total_reward += tmp_reward
-            # 训练结束条件
+            # The conditions for ending the training.
             if self.is_train_end_func():
                 self.log_model(self.itr_num, time.time() - self.start_time)
                 self.save_model(self.itr_num)
@@ -389,5 +385,3 @@ class CFRSolver(BaseSolver):
                 self.regret_matching_strategy(tmp_info)
 
         return r
-
-

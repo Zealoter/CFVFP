@@ -36,7 +36,7 @@ class Kuhn(Game):
 
         elif his_feat_list[-1] == 'RF':
             return np.array([1.0, -1])
-        else:  # CRF
+        else:
             return np.array([-1.0, 1])
 
     def get_legal_action_list_from_his_feat(self, his_feat: str) -> list:

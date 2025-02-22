@@ -66,7 +66,7 @@ class KuhnNPot(Kuhn):
         elif his_feat[-1] == 'F':
             return []
         elif (len(his_feat_act) >= self.z_len and his_feat_act[0] != 'C') or len(
-                his_feat_act) >= self.z_len + 1:  # 最多加注3次
+                his_feat_act) >= self.z_len + 1:
             return ['F', 'C']
         elif his_feat[-1] == '_' or his_feat[-2:] == '_C':
             return self.pot_symbol + ['C']
