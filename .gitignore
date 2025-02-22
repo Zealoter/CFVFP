@@ -1,2 +1,8 @@
 /logGFSPSampling/
 /logCFRSampling/
+.DS_Store
+.idea/*
+/.git
+.*
+__pycache__/*
+*.pyc
