@@ -2,7 +2,7 @@
 
 ## OverView
 
-This is the CFVFP method corresponding to the paper titled "Accelerating Nash Equilibrium Convergence in Monte Carlo Settings Through Counterfactual Value Based Fictitious Play". This paper has been accepted by NeurIPS 2024.
+This is the CFVFP method corresponding to the paper titled "Accelerating Nash Equilibrium Convergence in Monte Carlo Settings Through Counterfactual Value Based Fictitious Play" [Link](https://arxiv.org/abs/2309.03084). This paper has been accepted by NeurIPS 2024.
 
 This method is employed to address large-scale incomplete information game problems. The core concept of this approach is to use Q values instead of regret values in CFR. In the next iteration, directly utilize the strategy with the max Q-value action as the current strategy. This not only sidesteps a great deal of cumbersome calculations related to regret values but also can prevent the selection of dominated strategies, thereby accelerating the convergence of game algorithms.
 
