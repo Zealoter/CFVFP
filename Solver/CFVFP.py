@@ -61,7 +61,8 @@ class CFVFPSolver(CFRSolver):
                 a_i = self.game.now_policy[tmp_info]
                 tmp_r = self.CFVFP_walk_tree(his_feat + now_action_list[a_i], player_pi, pi_c)
                 r[op_player_id] = tmp_r[op_player_id]
-                self.game.w_his_policy[tmp_info][self.game.now_policy[tmp_info]] += self.ave_weight
+                if self.sampling_mode == 'sampling':
+                    self.game.w_his_policy[tmp_info][self.game.now_policy[tmp_info]] += self.ave_weight
 
             elif now_prob == 0:
                 for a_i in range(len(now_action_list)):
@@ -69,8 +70,9 @@ class CFVFPSolver(CFRSolver):
                     v[a_i] = tmp_r[now_player_id]
                     if self.game.now_policy[tmp_info] == a_i:
                         r[now_player_id] = tmp_r[now_player_id]
-                self.game.his_regret[tmp_info] += self.ave_weight * v
+
                 if self.sampling_mode == 'sampling':
+                    self.game.his_regret[tmp_info] += self.ave_weight * v
                     self.game.now_policy[tmp_info] = np.argmax(
                         self.game.his_regret[tmp_info]
                     )
@@ -94,9 +96,9 @@ class CFVFPSolver(CFRSolver):
                     r[op_player_id] = r[op_player_id] + tmp_r[op_player_id]
                     r[now_player_id] = r[now_player_id] + tmp_r[now_player_id] * prob
 
-                self.game.his_regret[tmp_info] += self.ave_weight * v
-                self.game.w_his_policy[tmp_info][self.game.now_policy[tmp_info]] += self.ave_weight
                 if self.sampling_mode == 'sampling':
+                    self.game.his_regret[tmp_info] += self.ave_weight * v
+                    self.game.w_his_policy[tmp_info][self.game.now_policy[tmp_info]] += self.ave_weight
                     self.game.now_policy[tmp_info] = np.argmax(
                         self.game.his_regret[tmp_info]
                     )

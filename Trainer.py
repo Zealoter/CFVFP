@@ -126,8 +126,8 @@ if __name__ == '__main__':
     plt_perfect_game_convergence_inline(
         fig_title,
         logdir + '/' + total_exp_name,
-        is_x_log=True,
-        is_y_log=False,
+        is_x_log=False,
+        is_y_log=True,
         x_label_index=4,
         y_label_index=2,
         x_label_name='node touched',
@@ -137,8 +137,8 @@ if __name__ == '__main__':
     plt_perfect_game_convergence_inline(
         fig_title,
         logdir + '/' + total_exp_name,
-        is_x_log=True,
-        is_y_log=False,
+        is_x_log=False,
+        is_y_log=True,
         x_label_index=1,
         y_label_index=2,
         x_label_name='time(ms)',
